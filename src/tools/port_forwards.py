@@ -67,8 +67,8 @@ async def list_port_forwards() -> Dict[str, Any]:  # Removed context, adjusted r
                 "enabled": r.get("enabled"),
                 "src_port": r.get("dst_port"),  # Note: UniFi uses dst_port for external
                 "dst_port": r.get("fwd_port"),  # Note: UniFi uses fwd_port for internal
-                "protocol": r.get("protocol"),
-                "dest_ip": r.get("fwd_ip"),
+                "protocol": r.get("proto"),  # UniFi uses 'proto' not 'protocol'
+                "dest_ip": r.get("fwd"),  # UniFi uses 'fwd' not 'fwd_ip'
             }
             for r in rules_raw
         ]
@@ -319,14 +319,14 @@ async def create_port_forward(port_forward_data: Dict[str, Any]) -> Dict[str, An
         return {"success": False, "error": error}
 
     try:
-        # Prepare data for the manager
+        # Prepare data for the manager — use UniFi API field names
         rule_data = {
             "name": validated_data["name"],
             "dst_port": validated_data["dst_port"],
             "fwd_port": validated_data["fwd_port"],
-            "fwd_ip": validated_data["fwd_ip"],
+            "fwd": validated_data["fwd_ip"],  # UniFi uses 'fwd' not 'fwd_ip'
             "proto": validated_data.get("protocol", "tcp_udp").replace("_", "/"),  # Manager expects 'tcp/udp'
-            "protocol_match_excepted": False,
+            "pfwd_interface": "wan",
             "enabled": validated_data.get("enabled", True),
             "log": validated_data.get("log", False),
         }
@@ -564,17 +564,18 @@ async def create_simple_port_forward(rule: Dict[str, Any], confirm: bool = False
 
     r = validated
 
-    # Build API payload matching existing V1 schema keys
+    # Build API payload matching UniFi V1 API field names
     payload: Dict[str, Any] = {
         "name": r["name"],
         "dst_port": str(r["ext_port"]),
         "fwd_port": str(r.get("int_port", r["ext_port"])),
-        "fwd_ip": r["to_ip"],
-        "protocol": {
+        "fwd": r["to_ip"],  # UniFi uses 'fwd' not 'fwd_ip'
+        "proto": {
             "tcp": "tcp",
             "udp": "udp",
             "both": "tcp_udp",
         }.get(r.get("protocol", "both"), "tcp_udp"),
+        "pfwd_interface": "wan",
         "enabled": r.get("enabled", True),
     }
 
