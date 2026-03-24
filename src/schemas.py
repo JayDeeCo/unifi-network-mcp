@@ -306,6 +306,42 @@ NETWORK_SCHEMA = {
         },
         "dhcp_start": {"type": "string", "description": "Start of DHCP range"},
         "dhcp_stop": {"type": "string", "description": "End of DHCP range"},
+        "dhcpd_dns_enabled": {
+            "type": "boolean",
+            "description": "Whether custom DNS servers are enabled for DHCP clients",
+        },
+        "dhcpd_dns_1": {
+            "type": "string",
+            "description": "Primary DNS server for DHCP clients",
+        },
+        "dhcpd_dns_2": {
+            "type": "string",
+            "description": "Secondary DNS server for DHCP clients",
+        },
+        "dhcpd_dns_3": {
+            "type": "string",
+            "description": "Tertiary DNS server for DHCP clients",
+        },
+        "dhcpd_dns_4": {
+            "type": "string",
+            "description": "Quaternary DNS server for DHCP clients",
+        },
+        "domain_name": {
+            "type": "string",
+            "description": "Domain name for the network",
+        },
+        "dhcpd_leasetime": {
+            "type": "integer",
+            "description": "DHCP lease time in seconds",
+        },
+        "network_isolation_enabled": {
+            "type": "boolean",
+            "description": "Enable network isolation (corporate networks only)",
+        },
+        "igmp_snooping": {
+            "type": "boolean",
+            "description": "Enable IGMP snooping",
+        },
         "enabled": {
             "type": "boolean",
             "default": True,

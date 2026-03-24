@@ -87,7 +87,7 @@ permissions:
 
   networks:
     create: false  # Provisioning a new network can disrupt traffic
-    update: false  # Changing subnets, VLANs, DHCP ranges requires care
+    update: true   # Needed for DHCP DNS changes etc.
 
   wlans:
     create: false
